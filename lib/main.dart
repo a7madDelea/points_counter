@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'cubits/counter_cubit.dart';
+import 'cubits/counter_state.dart';
 
 void main() {
   runApp(PointsCounterApp());
@@ -23,181 +27,195 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Points Counter'),
-        backgroundColor: Colors.deepOrangeAccent,
+    return BlocProvider(
+      create: (context) => CounterCubit(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Points Counter'),
+          backgroundColor: Colors.deepOrangeAccent,
+        ),
+        body: Counter(),
       ),
-      body: Counter(),
     );
   }
 }
 
-class Counter extends StatefulWidget {
+class Counter extends StatelessWidget {
   const Counter({super.key});
 
   @override
-  State<Counter> createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter> {
-  int counterA = 0;
-  int counterB = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      'Team A',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      counterA.toString(),
-                      style: TextStyle(
-                        fontSize: 100,
-                        fontWeight: FontWeight.w100,
-                        letterSpacing: -10,
-                      ),
-                    ),
-                    SizedBox(
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterA++;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 1 Point'),
+    CounterCubit counterState = BlocProvider.of<CounterCubit>(context);
+    return BlocConsumer<CounterCubit, CounterState>(
+      // ! We don't need to use this function because our application is very simple and we don't need to specify the return status from CounterCubit.
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  // * Team A section.
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'Team A',
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterA += 2;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 2 Point'),
+                        ),
+                        Text(
+                          counterState.counterA.toString(),
+                          style: TextStyle(
+                            fontSize: 100,
+                            fontWeight: FontWeight.w100,
+                            letterSpacing: -10,
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterA += 3;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 3 Point'),
+                        ),
+                        SizedBox(
+                          child: Column(
+                            children: [
+                              // * Add to team A one point.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'A',
+                                    pointNumber: 1,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 1 Point'),
+                              ),
+                              // * Add to team A two point.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'A',
+                                    pointNumber: 2,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 2 Point'),
+                              ),
+                              // * Add to team A three point.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'A',
+                                    pointNumber: 3,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 3 Point'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  VerticalDivider(
+                    width: 10,
+                    color: Colors.black,
+                    thickness: 1,
+                    indent: 60,
+                    endIndent: 60,
+                  ),
+                  // * Team B section.
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'Team B',
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          counterState.counterB.toString(),
+                          style: TextStyle(
+                            fontSize: 100,
+                            fontWeight: FontWeight.w100,
+                            letterSpacing: -10,
+                          ),
+                        ),
+                        SizedBox(
+                          child: Column(
+                            children: [
+                              // * Add to team B one point.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'B',
+                                    pointNumber: 1,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 1 Point'),
+                              ),
+                              // * Add to team B two points.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'B',
+                                    pointNumber: 2,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 2 Point'),
+                              ),
+                              // * Add to team B three point.
+                              ElevatedButton(
+                                onPressed: () {
+                                  counterState.incrementTeam(
+                                    team: 'b',
+                                    pointNumber: 3,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                ),
+                                child: Text('Add 3 Point'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              VerticalDivider(
-                width: 10,
-                color: Colors.black,
-                thickness: 1,
-                indent: 60,
-                endIndent: 60,
+            ),
+            SizedBox(height: 50),
+            // * Reset button.
+            ElevatedButton(
+              onPressed: () {
+                counterState.resetCounters();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent,
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      'Team B',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      counterB.toString(),
-                      style: TextStyle(
-                        fontSize: 100,
-                        fontWeight: FontWeight.w100,
-                        letterSpacing: -10,
-                      ),
-                    ),
-                    SizedBox(
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterB++;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 1 Point'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterB += 2;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 2 Point'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                counterB += 3;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrangeAccent,
-                            ),
-                            child: Text('Add 3 Point'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 50),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              counterA = 0;
-              counterB = 0;
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.deepOrangeAccent,
-          ),
-          child: Text('Reset'),
-        ),
-        SizedBox(height: 50),
-      ],
+              child: Text('Reset'),
+            ),
+            SizedBox(height: 50),
+          ],
+        );
+      },
     );
   }
 }
